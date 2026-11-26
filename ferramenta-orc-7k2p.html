@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerador de Orçamento — MEI no Automático</title>
+<style>
+:root{--verde:#0E7C66;--escuro:#0B2B26;--amarelo:#FFB703;--claro:#F2F7F5;--linha:#D9E4E0;--cinza:#5B6B67;--balao:#DCF8C6}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--claro);color:#1d2b28;font-size:16px}
+header{background:var(--escuro);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+header .m{color:var(--amarelo);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+header h1{margin:2px 0 0;font-size:19px}
+main{max-width:760px;margin:0 auto;padding:12px}
+details{background:#fff;border-radius:12px;margin:10px 0;border:1px solid var(--linha);overflow:hidden}
+summary{padding:14px 16px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::after{content:"＋";color:var(--verde)}
+details[open] summary::after{content:"－"}
+.c{padding:0 16px 16px}
+label{display:block;font-size:13px;font-weight:600;color:var(--cinza);margin:10px 0 4px}
+input,textarea,select{width:100%;padding:11px 12px;border:1px solid var(--linha);border-radius:9px;font:inherit;background:#fff}
+textarea{min-height:64px;resize:vertical}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.it{display:grid;grid-template-columns:1fr 58px 96px 34px;gap:6px;margin-bottom:6px;align-items:center}
+.it input{padding:9px}
+.x{background:#fdecea;border:0;border-radius:8px;height:38px;color:#c0392b;font-size:18px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 14px;border-radius:10px;border:0;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.p{background:var(--verde);color:#fff}.s{background:#fff;color:var(--escuro);border:1px solid var(--linha)}.a{background:var(--amarelo);color:var(--escuro)}
+.add{margin-top:4px;width:100%}
+.chk{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}.chk label{display:flex;align-items:center;gap:6px;margin:0;color:#1d2b28;font-weight:500}.chk input{width:auto}
+.tot{background:var(--claro);border-radius:10px;padding:10px 12px;margin-top:10px;font-weight:700;display:flex;justify-content:space-between}
+.op{border:1px dashed var(--linha);border-radius:10px;padding:8px 10px;margin:8px 0}
+.prev{background:#E5DDD5;border-radius:12px;padding:14px;margin-top:10px}
+.bubble{background:var(--balao);border-radius:10px 10px 10px 2px;padding:10px 12px;white-space:pre-wrap;font-size:15px;line-height:1.45;max-width:94%}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.acts .full{grid-column:1/-1}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--escuro);color:#fff;padding:10px 16px;border-radius:20px;opacity:0;transition:.3s;pointer-events:none}.toast.on{opacity:1}
+.hint{font-size:12.5px;color:var(--cinza);margin-top:6px}
+.hist{font-size:14px}.hist div{padding:8px 0;border-bottom:1px solid var(--linha);display:flex;justify-content:space-between;gap:8px}
+footer{text-align:center;font-size:12px;color:var(--cinza);padding:20px}
+#doc{display:none}
+@media print{
+  header,main,footer,.toast{display:none!important}
+  #doc{display:block;font-family:Inter,Arial,sans-serif;color:#1d2b28;padding:10mm 12mm}
+  @page{size:A4;margin:10mm}
+  #doc .top{display:flex;justify-content:space-between;border-bottom:3px solid var(--verde);padding-bottom:6mm;margin-bottom:6mm}
+  #doc h2{margin:0;font-size:22pt;color:var(--escuro)} #doc .meta{font-size:10pt;color:#555;text-align:right}
+  #doc table{width:100%;border-collapse:collapse;margin:4mm 0;font-size:10.5pt}
+  #doc th{background:var(--escuro);color:#fff;text-align:left;padding:2.5mm}
+  #doc td{border-bottom:1px solid #ddd;padding:2.5mm}
+  #doc .r{text-align:right}
+  #doc .total{font-size:14pt;font-weight:800;text-align:right;margin:3mm 0 6mm}
+  #doc .bloco{margin:3mm 0;font-size:10.5pt;page-break-inside:avoid} #doc .bloco b{color:var(--escuro)}
+  #doc .ass{margin-top:16mm;font-size:10pt;color:#555}
+  #doc .ops{display:flex;gap:4mm}#doc .ops div{flex:1;border:1px solid #ddd;border-radius:3mm;padding:4mm}
+  #doc .ops .dest{border:2px solid var(--verde)}
+}
+</style>
+</head>
+<body>
+<header><div class="m">MEI no Automático</div><h1>Gerador de Orçamento</h1></header>
+<main>
+
+<details id="dNeg">
+<summary>1. Dados do seu negócio (preencha uma vez)</summary>
+<div class="c">
+<label>Nome do negócio</label><input id="nNome" placeholder="Ex.: Doces da Carla">
+<div class="row"><div><label>Seu nome</label><input id="nPessoa" placeholder="Carla"></div><div><label>Seu WhatsApp</label><input id="nZap" inputmode="tel" placeholder="(11) 99999-9999"></div></div>
+<div class="row"><div><label>Cidade/região</label><input id="nCidade" placeholder="Campinas - SP"></div><div><label>CNPJ/CPF (opcional)</label><input id="nDoc"></div></div>
+<label>Chave Pix</label><input id="nPix" placeholder="e-mail, telefone ou CNPJ">
+<label>Instagram ou site (opcional)</label><input id="nInsta" placeholder="@seuinsta">
+<p class="hint">Fica salvo só neste aparelho/navegador.</p>
+</div></details>
+
+<details open>
+<summary>2. Cliente e pedido</summary>
+<div class="c">
+<div class="row"><div><label>Nome do cliente</label><input id="cNome" placeholder="Ana"></div><div><label>WhatsApp do cliente (opcional)</label><input id="cZap" inputmode="tel" placeholder="(11) 98888-7777"></div></div>
+<label>Resumo do pedido</label><input id="pResumo" placeholder="Bolo de aniversário para 30 pessoas, tema Frozen">
+<label>Modo</label>
+<select id="modo"><option value="itens">Orçamento com itens</option><option value="opcoes">3 opções (Essencial / Completo / Premium)</option></select>
+
+<div id="boxItens">
+<label>Itens (descrição · qtd · valor unitário)</label>
+<div id="itens"></div>
+<button class="btn s add" id="addIt" type="button">＋ Adicionar item</button>
+<div class="row"><div><label>Deslocamento/taxa (R$)</label><input id="desloc" inputmode="decimal" placeholder="0"></div><div><label>Desconto (R$)</label><input id="desc" inputmode="decimal" placeholder="0"></div></div>
+<div class="tot"><span>Total</span><span id="total">R$ 0,00</span></div>
+</div>
+
+<div id="boxOps" style="display:none">
+<div class="op"><label>🥉 Essencial — o que inclui</label><input id="o1d" placeholder="Bolo 2 kg com chantininho"><label>Valor (R$)</label><input id="o1v" inputmode="decimal"></div>
+<div class="op"><label>🥈 Completo — o que inclui ⭐ (mais escolhido)</label><input id="o2d" placeholder="Bolo decorado com tema + topo"><label>Valor (R$)</label><input id="o2v" inputmode="decimal"></div>
+<div class="op"><label>🥇 Premium — o que inclui</label><input id="o3d" placeholder="Bolo decorado + 50 docinhos"><label>Valor (R$)</label><input id="o3v" inputmode="decimal"></div>
+<label>O que todas incluem (opcional)</label><input id="oComum" placeholder="embalagem e entrega no bairro">
+</div>
+</div></details>
+
+<details open>
+<summary>3. Condições</summary>
+<div class="c">
+<label>Está incluso</label><input id="inclui" placeholder="Mão de obra, limpeza do local">
+<label>Não está incluso (opcional)</label><input id="naoInclui" placeholder="Material elétrico">
+<label>Prazo / data</label><input id="prazo" placeholder="Entrega no sábado, 14/12, às 10h">
+<label>Formas de pagamento</label>
+<div class="chk"><label><input type="checkbox" id="fPix" checked> Pix</label><label><input type="checkbox" id="fCartao"> Cartão</label><label><input type="checkbox" id="fDin"> Dinheiro</label></div>
+<div class="row"><div><label>Parcelas</label><input id="parc" inputmode="numeric" placeholder="3"></div><div><label>Sinal (%)</label><input id="sinal" inputmode="numeric" placeholder="0"></div><div><label>Validade (dias)</label><input id="valid" inputmode="numeric" value="7"></div></div>
+<label>Garantia (opcional)</label><input id="garantia" placeholder="90 dias para a mão de obra">
+<label>Pergunta de próximo passo</label><input id="prox" value="Posso reservar essa data pra você?">
+</div></details>
+
+<div class="prev"><div class="bubble" id="saida"></div></div>
+<div class="acts">
+<button class="btn p" id="bCopiar" type="button">📋 Copiar mensagem</button>
+<a class="btn p" id="bZap" target="_blank" rel="noopener">💬 Abrir no WhatsApp</a>
+<button class="btn a" id="bPdf" type="button">📄 Gerar PDF</button>
+<button class="btn s" id="bSalvar" type="button">💾 Salvar no histórico</button>
+<button class="btn s full" id="bLinha" type="button">📊 Copiar linha para a planilha</button>
+<button class="btn s full" id="bNovo" type="button">🧹 Novo orçamento</button>
+</div>
+<p class="hint">"Gerar PDF" abre a janela de impressão: escolha <b>Salvar como PDF</b> e envie o arquivo na conversa. "Copiar linha" cola direto na aba Orçamentos da planilha do kit.</p>
+
+<details>
+<summary>Histórico de orçamentos (neste aparelho)</summary>
+<div class="c hist" id="hist"></div>
+</details>
+</main>
+<footer>Kit Orçamento no Automático · MEI no Automático · uso individual</footer>
+<div id="doc"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const neg=['nNome','nPessoa','nZap','nCidade','nDoc','nPix','nInsta'];
+const num=s=>{if(!s)return 0;s=String(s).replace(/[^\d,.-]/g,'');if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'');s=s.replace(',','.');const n=parseFloat(s);return isNaN(n)?0:n};
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)}
+
+// negócio
+const salvo=store.get('mna_negocio',{});neg.forEach(k=>{$(k).value=salvo[k]||'';$(k).addEventListener('input',()=>{const o={};neg.forEach(j=>o[j]=$(j).value);store.set('mna_negocio',o);render()})});
+if(!salvo.nNome)$('dNeg').open=true;
+
+// itens
+function addItem(d='',q='1',v=''){const w=document.createElement('div');w.className='it';
+w.innerHTML='<input placeholder="Descrição"><input inputmode="decimal" placeholder="Qtd"><input inputmode="decimal" placeholder="R$ unit."><button class="x" type="button" title="Remover">×</button>';
+const [a,b,c,x]=w.children;a.value=d;b.value=q;c.value=v;[a,b,c].forEach(i=>i.addEventListener('input',render));x.onclick=()=>{w.remove();render()};$('itens').appendChild(w)}
+addItem();$('addIt').onclick=()=>{addItem();render()};
+function itens(){return [...$('itens').children].map(w=>{const [a,b,c]=w.children;return{d:a.value.trim(),q:num(b.value)||1,v:num(c.value)}}).filter(i=>i.d||i.v)}
+function total(){return itens().reduce((s,i)=>s+i.q*i.v,0)+num($('desloc').value)-num($('desc').value)}
+
+document.querySelectorAll('input,select,textarea').forEach(e=>{if(!neg.includes(e.id))e.addEventListener('input',render)});
+$('modo').addEventListener('change',()=>{const op=$('modo').value==='opcoes';$('boxItens').style.display=op?'none':'';$('boxOps').style.display=op?'':'none';render()});
+
+function pagamento(){const f=[];if($('fPix').checked)f.push('Pix');if($('fCartao').checked){const p=parseInt($('parc').value)||0;f.push(p>1?`cartão em até ${p}x`:'cartão')}if($('fDin').checked)f.push('dinheiro');
+let t=f.join(', ');const s=parseInt($('sinal').value)||0;if(s>0)t+=` · sinal de ${s}% para reservar`;return t}
+function validade(){const d=parseInt($('valid').value)||0;if(!d)return'';const dt=new Date();dt.setDate(dt.getDate()+d);return `${d} dias (até ${dt.toLocaleDateString('pt-BR')})`}
+
+function mensagem(){
+ const nome=$('nNome').value||'[Nome do Negócio]',cli=$('cNome').value.trim();
+ let m=`*Orçamento — ${nome}*\n`;
+ if(cli)m=`Oi, ${cli}! Segue seu orçamento 😊\n\n`+m;
+ if($('pResumo').value)m+=`📝 *Pedido:* ${$('pResumo').value}\n`;
+ if($('modo').value==='itens'){
+   const its=itens();
+   if(its.length){m+=`\n`;its.forEach(i=>{m+=`• ${i.d||'Item'}${i.q!==1?` (${String(i.q).replace('.',',')}x)`:''} — ${brl(i.q*i.v)}\n`});}
+   const dl=num($('desloc').value),ds=num($('desc').value);
+   if(dl)m+=`• Deslocamento/taxa — ${brl(dl)}\n`; if(ds)m+=`• Desconto — −${brl(ds)}\n`;
+   m+=`\n💰 *Valor total:* ${brl(total())}\n`;
+ }else{
+   m+=`\nSeparei 3 opções pra você escolher:\n\n`;
+   [['🥉','Essencial','o1'],['🥈','Completo','o2'],['🥇','Premium','o3']].forEach(([e,n,k],i)=>{m+=`${e} *${n}* — ${$(k+'d').value||'[descrição]'} — ${brl(num($(k+'v').value))}${i===1?' ⭐ mais escolhido':''}\n`});
+   if($('oComum').value)m+=`\nTodas incluem: ${$('oComum').value}\n`;
+ }
+ if($('inclui').value)m+=`✅ *Inclui:* ${$('inclui').value}\n`;
+ if($('naoInclui').value)m+=`❌ *Não inclui:* ${$('naoInclui').value}\n`;
+ if($('prazo').value)m+=`📅 *Prazo/data:* ${$('prazo').value}\n`;
+ const pg=pagamento();if(pg)m+=`💳 *Pagamento:* ${pg}\n`;
+ if($('garantia').value)m+=`🛡️ *Garantia:* ${$('garantia').value}\n`;
+ const v=validade();if(v)m+=`⏳ *Validade:* ${v}\n`;
+ if($('prox').value)m+=`\n${$('prox').value}`;
+ return m.trim();
+}
+function render(){$('saida').textContent=mensagem();$('total').textContent=brl(total());const tel=$('cZap').value.replace(/\D/g,'');const t=encodeURIComponent(mensagem());
+ $('bZap').href=tel?`https://wa.me/${tel.length<=11?'55'+tel:tel}?text=${t}`:`https://wa.me/?text=${t}`}
+render();
+
+$('bCopiar').onclick=async()=>{try{await navigator.clipboard.writeText(mensagem());toast('Mensagem copiada!')}catch(e){const ta=document.createElement('textarea');ta.value=mensagem();document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Mensagem copiada!')}};
+
+function valorRef(){return $('modo').value==='itens'?total():num($('o2v').value)}
+$('bLinha').onclick=async()=>{const hoje=new Date().toLocaleDateString('pt-BR');
+ const linha=[hoje,$('cNome').value,$('cZap').value,$('pResumo').value,valorRef().toFixed(2).replace('.',','),'Orçamento enviado'].join('\t');
+ try{await navigator.clipboard.writeText(linha);toast('Linha copiada! Cole na planilha.')}catch(e){toast('Não foi possível copiar')}};
+
+$('bSalvar').onclick=()=>{const h=store.get('mna_hist',[]);h.unshift({d:new Date().toLocaleDateString('pt-BR'),c:$('cNome').value||'(sem nome)',r:$('pResumo').value,v:valorRef(),m:mensagem()});store.set('mna_hist',h.slice(0,50));hist();toast('Salvo no histórico')};
+function hist(){const h=store.get('mna_hist',[]);$('hist').innerHTML=h.length?h.map((o,i)=>`<div><span>${esc(o.d)} · <b>${esc(o.c)}</b> · ${esc(o.r||'')}</span><span>${brl(o.v)} <button class="btn s" data-i="${i}" style="padding:4px 8px">copiar</button></span></div>`).join(''):'<p class="hint">Nenhum orçamento salvo ainda.</p>';
+ $('hist').querySelectorAll('button').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(h[b.dataset.i].m);toast('Copiado!')}catch(e){}})}
+hist();
+
+$('bNovo').onclick=()=>{['cNome','cZap','pResumo','desloc','desc','o1d','o1v','o2d','o2v','o3d','o3v','oComum','inclui','naoInclui','prazo','garantia'].forEach(k=>$(k).value='');$('itens').innerHTML='';addItem();render();window.scrollTo(0,0)};
+
+$('bPdf').onclick=()=>{const n=k=>esc($(k).value);const hoje=new Date().toLocaleDateString('pt-BR');let corpo='';
+ if($('modo').value==='itens'){corpo='<table><tr><th>Descrição</th><th class="r">Qtd</th><th class="r">Unitário</th><th class="r">Subtotal</th></tr>'+itens().map(i=>`<tr><td>${esc(i.d)}</td><td class="r">${String(i.q).replace('.',',')}</td><td class="r">${brl(i.v)}</td><td class="r">${brl(i.q*i.v)}</td></tr>`).join('');
+  const dl=num($('desloc').value),ds=num($('desc').value);if(dl)corpo+=`<tr><td>Deslocamento/taxa</td><td></td><td></td><td class="r">${brl(dl)}</td></tr>`;if(ds)corpo+=`<tr><td>Desconto</td><td></td><td></td><td class="r">−${brl(ds)}</td></tr>`;
+  corpo+=`</table><div class="total">Total: ${brl(total())}</div>`;}
+ else{corpo='<div class="ops">'+[['Essencial','o1'],['Completo ⭐','o2'],['Premium','o3']].map(([t,k],i)=>`<div class="${i===1?'dest':''}"><b>${t}</b><p>${n(k+'d')}</p><p style="font-size:14pt;font-weight:800">${brl(num($(k+'v').value))}</p></div>`).join('')+'</div>'+($('oComum').value?`<p class="bloco"><b>Todas incluem:</b> ${n('oComum')}</p>`:'');}
+ const linha=(r,k)=>$(k).value?`<p class="bloco"><b>${r}:</b> ${n(k)}</p>`:'';
+ $('doc').innerHTML=`<div class="top"><div><h2>${n('nNome')||'Orçamento'}</h2><div>${n('nPessoa')} · ${n('nZap')} ${$('nInsta').value?'· '+n('nInsta'):''}<br>${n('nCidade')} ${$('nDoc').value?'· '+n('nDoc'):''}</div></div><div class="meta"><b>ORÇAMENTO</b><br>Data: ${hoje}<br>Cliente: ${n('cNome')||'—'}</div></div>
+ ${$('pResumo').value?`<p class="bloco"><b>Pedido:</b> ${n('pResumo')}</p>`:''}${corpo}${linha('Inclui','inclui')}${linha('Não inclui','naoInclui')}${linha('Prazo/data','prazo')}
+ <p class="bloco"><b>Pagamento:</b> ${esc(pagamento())}${$('nPix').value?' · Pix: '+n('nPix'):''}</p>${linha('Garantia','garantia')}${validade()?`<p class="bloco"><b>Validade:</b> ${esc(validade())}</p>`:''}
+ <div class="ass">Aceite do cliente: ____________________________________ Data: ____/____/______</div>`;
+ window.print();};
+})();
+</script>
+</body>
+</html>
