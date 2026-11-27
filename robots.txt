@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /ferramenta-orc-7k2p.html
 Disallow: /obrigado.html
+Disallow: /videos/
 
 Sitemap: https://ort0x36.github.io/sitemap.xml
