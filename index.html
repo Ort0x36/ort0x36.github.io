@@ -46,6 +46,24 @@ section{padding:84px 0;border-top:1px solid var(--line)}
 .btn{display:inline-flex;align-items:center;gap:10px;background:var(--green);color:#fff;font-weight:700;font-size:18px;padding:16px 26px;border-radius:10px;text-decoration:none;transition:background .15s}
 .btn:hover{background:var(--green-d)}
 .btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.buy{position:relative;overflow:hidden;background:var(--accent);color:#1b1404;font-weight:800;font-size:19px;padding:18px 30px;border-radius:12px;box-shadow:0 10px 24px -10px #b07a0f,0 2px 0 #c98a14 inset;transition:transform .12s,box-shadow .12s,background .12s}
+.buy:hover{background:#f6bd4c;transform:translateY(-2px);box-shadow:0 16px 30px -12px #b07a0f}
+.buy:active{transform:translateY(1px)}
+.buy:focus-visible{outline:3px solid var(--ink)}
+.buy:after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,#ffffff8c,transparent);transform:skewX(-20deg);animation:shine 4.5s ease-in-out 1.5s infinite}
+@keyframes shine{0%,70%{left:-60%}100%{left:130%}}
+.ctabox{margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.ctabox.c{align-items:center;text-align:center}
+.risk{font-size:14.5px;color:var(--mute);margin-top:10px}
+.risk b{color:var(--ink2)}
+.sec{display:inline-block;margin-top:14px;font-size:15px;font-weight:600;color:var(--ink2)}
+.pay{display:flex;justify-content:center;gap:14px;margin-top:14px;color:var(--mute);font-size:13.5px}
+.pay span{display:inline-flex;align-items:center;gap:5px}.pay .ico{width:16px;height:16px;flex-basis:16px}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:20;background:#fbfaf7f5;backdrop-filter:blur(6px);border-bottom:1px solid var(--line);transform:translateY(-100%);transition:transform .25s}
+.topbar.on{transform:none}
+.topbar .w{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:10px;padding-bottom:10px;font-size:15px}
+.topbar .buy{padding:11px 20px;font-size:16px}
+.res .buy{margin-top:18px;font-size:17px;padding:15px 22px}
 .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:14.5px;color:var(--mute)}
 .meta span{display:inline-flex;align-items:center;gap:6px}.meta .ico{width:17px;height:17px;flex-basis:17px;color:var(--green)}
 .note{font-size:14px;color:var(--mute)}
@@ -150,8 +168,10 @@ section{padding:84px 0;border-top:1px solid var(--line)}
 .final .meta{justify-content:center}
 footer{border-top:1px solid var(--line);padding:36px 0 40px;font-size:14px;color:var(--mute)}
 footer p{margin:0 0 8px}footer a{color:var(--ink2)}
-.fixo{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:#fbfaf7f2;border-top:1px solid var(--line);display:none;z-index:9}
-.fixo .btn{width:100%;justify-content:center;padding:13px 20px;font-size:17px}
+.fixo{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fbfaf7f2;border-top:1px solid var(--line);display:none;z-index:9;transform:translateY(110%);transition:transform .25s}
+.fixo.on{transform:none}
+.fixo .btn{width:100%;justify-content:center;padding:14px 20px;font-size:17px}
+.fixo small{display:block;text-align:center;font-size:12px;color:var(--mute);margin-top:5px}
 
 @media(max-width:860px){
  section{padding:60px 0}.hero{padding:16px 0 60px}
@@ -159,9 +179,9 @@ footer p{margin:0 0 8px}footer a{color:var(--ink2)}
  .three,.passos{grid-template-columns:1fr;gap:26px}
  .roda{grid-template-columns:1fr 1fr}.roda div:nth-child(2){border-right:0}.roda div:nth-child(-n+2){border-bottom:1px solid var(--line)}
  .it{grid-template-columns:1fr}.it img{max-width:200px}
- .calc{padding:22px}.fixo{display:block}body{padding-bottom:72px}
+ .calc{padding:22px}.fixo{display:block}.topbar{display:none}.ctabox{align-items:stretch}.ctabox .buy{justify-content:center}
 }
-@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.buy:after{animation:none;display:none}}
 </style>
 </head>
 <body>
@@ -173,6 +193,7 @@ footer p{margin:0 0 8px}footer a{color:var(--ink2)}
 <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L5 14h6l-1 7 8-11h-6z"/></symbol>
 <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></symbol>
 <symbol id="i-pix" viewBox="0 0 24 24"><path d="M12 3l9 9-9 9-9-9z"/><path d="M8 12h8"/></symbol>
 <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
 <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5c3-1 5.5-.8 8 1v14c-2.5-1.8-5-2-8-1z"/><path d="M20 5c-3-1-5.5-.8-8 1v14c2.5-1.8 5-2 8-1z"/></symbol>
@@ -190,15 +211,17 @@ footer p{margin:0 0 8px}footer a{color:var(--ink2)}
 <symbol id="i-flow" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8.5 10.5l2.3 2.2 4.7-4.7"/></symbol>
 </svg>
 
+<div class="topbar" id="topbar" aria-hidden="true"><div class="w"><span><b>Kit Orçamento no Automático</b> · R$ 37, pagamento único · 7 dias de garantia</span><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout tabindex="-1">Quero o kit</a></div></div>
 <header class="hero">
 <div class="w">
-<nav class="nav"><a class="brand" href="#"><i><svg class="ico"><use href="#i-flow"/></svg></i>MEI no Automático</a><a class="lk" href="#oferta">Ver o kit</a></nav>
+<nav class="nav"><a class="brand" href="#"><i><svg class="ico"><use href="#i-flow"/></svg></i>MEI no Automático</a><a class="lk" href="#oferta">Ver o kit e o preço</a></nav>
 <div class="hgrid">
 <div>
 <span class="eyebrow">Para MEI e autônomos que vendem por orçamento</span>
 <h1>Pare de perder cliente depois do <em>"quanto custa?"</em></h1>
 <p class="lead">Mensagens prontas, um gerador de orçamento e uma planilha de acompanhamento para você responder rápido, orçar com clareza e chamar de volta quem sumiu. Tudo pelo WhatsApp Business, no celular, sem pagar ferramenta.</p>
-<a class="btn" href="#oferta">Quero o kit por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a>
+<a class="btn buy" id="heroBuy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o kit por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a>
+<p class="risk"><b>7 dias para testar.</b> Se não servir, você pede e recebe 100% de volta.</p>
 <div class="meta"><span><svg class="ico"><use href="#i-bolt"/></svg>Acesso imediato</span><span><svg class="ico"><use href="#i-shield"/></svg>Garantia de 7 dias</span><span><svg class="ico"><use href="#i-pix"/></svg>Pix ou cartão</span></div>
 </div>
 <div>
@@ -232,6 +255,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <div><div class="n">03</div><h3>Não acompanhar</h3><p>Dá vergonha de chamar de novo e o cliente esquece. Muito "não" é só um "ainda não decidi".</p></div>
 </div>
 <p class="src">Para 8 em cada 10 donos de pequenos negócios, o WhatsApp é o principal canal de comunicação e vendas (Sebrae, Pulso dos Pequenos Negócios, 2026). E a demora para responder é a reclamação mais citada sobre atendimento online, por 58,6% dos consumidores (Locaweb, 2026).</p>
+<div class="ctabox"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero resolver isso por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a><p class="risk">Acesso imediato no seu e-mail. <b>Garantia de 7 dias.</b></p></div>
 </div>
 </section>
 
@@ -246,6 +270,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <div><b>D</b><h3>Destravar</h3><p>Respostas para "tá caro", "vou pensar" e "faz desconto?" que não baixam o seu preço.</p></div>
 <div><b>A</b><h3>Acompanhar</h3><p>Lembretes em 1, 3 e 7 dias. A planilha mostra quem chamar hoje.</p></div>
 </div>
+<div class="ctabox"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o Método RODA completo <svg class="ico"><use href="#i-arrow"/></svg></a><p class="risk">Guia, 116 mensagens, gerador, IA e planilha por <b>R$ 37</b>.</p></div>
 </div>
 </section>
 
@@ -260,6 +285,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <div class="it"><img src="img/capa-assistente.jpg" width="372" height="527" loading="lazy" decoding="async" alt="Capa do Assistente de Orçamento com IA"><div><div class="k"><svg class="ico"><use href="#i-spark"/></svg>IA gratuita</div><h3>Assistente de Orçamento com IA e 30 prompts</h3><p>Instruções prontas para colar no ChatGPT, Gemini ou Claude, nas versões gratuitas. Você cola a mensagem bagunçada do cliente e recebe o pedido organizado, o que falta perguntar e um rascunho de orçamento para revisar.</p></div></div>
 <div class="it"><img src="img/planilha.jpg" width="700" height="230" loading="lazy" decoding="async" alt="Planilha de orçamentos e acompanhamento"><div><div class="k"><svg class="ico"><use href="#i-table"/></svg>Planilha</div><h3>Planilha de Orçamentos e Acompanhamento</h3><p>Anote cada orçamento em poucos segundos. Ela mostra quem chamar hoje e com qual mensagem, sua taxa de fechamento e quanto dinheiro está esperando resposta. Tem calculadora de preço. Funciona no Excel e no Google Planilhas.</p></div></div>
 </div>
+<div class="ctabox"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero os 5 materiais por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a><p class="risk">Pagamento único, sem mensalidade. <b>Garantia de 7 dias.</b></p></div>
 </div>
 </section>
 
@@ -280,6 +306,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <div class="big" id="rMes">R$ 500</div>
 <p>por mês, ou <b id="rAno">R$ 6.000</b> por ano.</p>
 <p style="margin-top:14px">O kit custa R$ 37, ou <b id="rPct">15%</b> de um serviço seu.</p>
+<a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout id="calcBuy"><span>Começar a recuperar <span id="rBtn">R$ 500</span> por mês</span></a>
 </div>
 </div>
 <p class="note" style="margin-top:14px">É uma simulação com os números que você escolheu, não uma promessa. O resultado depende do seu serviço, do preço e do atendimento.</p>
@@ -312,6 +339,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <li><svg class="ico"><use href="#i-x"/></svg>Quer resultado sem aplicar. O kit tira o trabalho repetitivo, mas quem atende é você.</li>
 <li><svg class="ico"><use href="#i-x"/></svg>Vende só em marketplace, sem conversar com o cliente.</li></ul></div>
 </div>
+<div class="ctabox"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Esse kit é para mim <svg class="ico"><use href="#i-arrow"/></svg></a><p class="risk">Se em 7 dias achar que não é, <b>devolvemos 100%</b>.</p></div>
 </div>
 </section>
 
@@ -346,9 +374,9 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <div class="price">
 <p class="note" style="margin:0 0 8px">Pagamento único</p>
 <div class="v"><small>R$</small>37</div>
-<a class="btn" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o kit agora <svg class="ico"><use href="#i-arrow"/></svg></a>
-<p class="note"><svg class="ico"><use href="#i-lock"/></svg>Pagamento seguro pela Kiwify</p>
-<p class="note" style="margin:0">Pix ou cartão · Acesso imediato</p>
+<a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o kit agora <svg class="ico"><use href="#i-arrow"/></svg></a>
+<div class="pay"><span><svg class="ico"><use href="#i-pix"/></svg>Pix</span><span><svg class="ico"><use href="#i-card"/></svg>Cartão</span><span><svg class="ico"><use href="#i-lock"/></svg>Kiwify</span></div>
+<p style="margin:16px 0 0;text-align:left;line-height:1.5;font-size:14px;color:var(--mute)"><b style="color:var(--ink)">Depois do clique:</b> você paga na página segura da Kiwify e recebe o acesso no e-mail em minutos. Se não servir, pede o reembolso em até 7 dias.</p>
 </div>
 </div>
 </div>
@@ -365,13 +393,14 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <details><summary>Como recebo o kit?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Assim que o pagamento é confirmado, você recebe por e-mail o acesso à área de membros com todos os arquivos para baixar.</p></details>
 <details><summary>Vendo produto, não serviço. Serve para mim?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Foi feito para quem vende por orçamento. Quem vende sob encomenda (bolos, personalizados, móveis) usa do mesmo jeito. Loja com preço fixo e entrega imediata aproveita menos.</p></details>
 <details><summary>Vou fechar mais vendas com certeza?<svg class="ico"><use href="#i-plus"/></svg></summary><p>Não prometemos números. O kit resolve o que depende de você (responder rápido, orçar com clareza e acompanhar), mas o resultado também depende do seu serviço, preço e mercado. Se em 7 dias achar que não vale, peça o reembolso.</p></details>
+<div class="ctabox"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Tirei minhas dúvidas, quero o kit <svg class="ico"><use href="#i-arrow"/></svg></a><p class="risk">R$ 37, pagamento único. <b>Garantia de 7 dias.</b></p></div>
 </div>
 </section>
 
 <section class="final">
 <div class="w">
 <h2>Seu próximo "quanto custa?" pode virar um "fechado".</h2>
-<a class="btn" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout style="margin-top:10px">Quero o kit por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a>
+<a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout style="margin-top:10px">Quero o kit por R$ 37 <svg class="ico"><use href="#i-arrow"/></svg></a>
 <div class="meta"><span><svg class="ico"><use href="#i-shield"/></svg>Garantia de 7 dias</span><span><svg class="ico"><use href="#i-bolt"/></svg>Acesso imediato</span></div>
 <p class="note" style="margin-top:28px">Ainda não decidiu? <a href="gratis.html">Baixe grátis 15 respostas para o "quanto custa?"</a>, sem cadastro.</p>
 </div>
@@ -384,7 +413,7 @@ Qual faz mais sentido pra você?<small>14:09</small></div>
 <p>WhatsApp e WhatsApp Business são marcas da Meta Platforms. Este produto é independente e não tem vínculo com Meta, OpenAI, Google ou Anthropic. As conversas mostradas são ilustrativas e os resultados variam de negócio para negócio.</p>
 </div>
 </footer>
-<div class="fixo"><a class="btn" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o kit · R$ 37</a></div>
+<div class="fixo" id="fixo"><a class="btn buy" href="https://pay.kiwify.com.br/Y1u4oVF" data-checkout>Quero o kit por R$ 37</a><small>Acesso imediato · 7 dias de garantia</small></div>
 
 <script>
 var CHECKOUT_URL = "https://pay.kiwify.com.br/Y1u4oVF";
@@ -398,8 +427,13 @@ var CHECKOUT_URL = "https://pay.kiwify.com.br/Y1u4oVF";
   function calc(){var tk=+t.value,pd=+p.value,m=Math.round(tk*pd*0.25);
     document.getElementById("vTicket").textContent=brl(tk);document.getElementById("vPerd").textContent=pd;
     document.getElementById("rMes").textContent=brl(m);document.getElementById("rAno").textContent=brl(m*12);
-    document.getElementById("rPct").textContent=Math.max(1,Math.round(37/tk*100))+"%";}
+    document.getElementById("rPct").textContent=Math.max(1,Math.round(37/tk*100))+"%";document.getElementById("rBtn").textContent=brl(m);}
   t.addEventListener("input",calc);p.addEventListener("input",calc);calc();
+  var hb=document.getElementById("heroBuy"),of=document.getElementById("oferta"),tb=document.getElementById("topbar"),fx=document.getElementById("fixo");
+  function vis(){var past=hb.getBoundingClientRect().bottom<0,r=of.getBoundingClientRect(),inOf=r.top<innerHeight*.8&&r.bottom>0,on=past&&!inOf;
+    tb.classList.toggle("on",on);tb.setAttribute("aria-hidden",on?"false":"true");tb.querySelector("a").tabIndex=on?0:-1;
+    fx.classList.toggle("on",on);document.body.style.paddingBottom=on&&getComputedStyle(fx).display!=="none"?"86px":"";}
+  addEventListener("scroll",vis,{passive:true});addEventListener("resize",vis);vis();
 })();
 </script>
 </body>
